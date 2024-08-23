@@ -65,8 +65,53 @@ const server = http.createServer((req, res) => {
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.end(JSON.stringify(results));
             });
-
-        } else if (req.method === 'PUT' && pathname.startsWith('/update-employee/')) {
+        }
+        // } else if(pathname === '/getsingle-employee/'){
+        //     const id = parseInt(pathname.split('/')[2]);
+        //     const sql = 'SELECT * FROM employees WHERE id = ?';
+        //     db.query(sql, [id], (err, results) => {
+        //         if(err){
+        //             console.error(err);
+        //             res.writeHead(500, {'Content-Type': 'text/plain'});
+        //             res.end('Error to find Employee');
+        //             return;
+        //         }
+        //         res.writeHead(200, {'Content-Type': ''});
+        //         res.end(JSON.stringify(results));
+        //     });
+        // } 
+        else if (pathname.startsWith('/getsingle-employee/')) {
+            const segments = pathname.split('/');
+            const id = parseInt(segments[segments.length - 1], 10);
+        
+            // Ensure id is a valid number
+            if (isNaN(id)) {
+                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end('Invalid employee ID');
+                return;
+            }
+        
+            const sql = 'SELECT * FROM employees WHERE id = ?';
+            db.query(sql, [id], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
+                    res.end('Error finding Employee');
+                    return;
+                }
+        
+                // Assuming results is an array
+                if (results.length === 0) {
+                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+                    res.end('Employee not found');
+                    return;
+                }
+        
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(results[0]));
+            });
+        }
+        else if (req.method === 'PUT' && pathname.startsWith('/update-employee/')) {
             const id = parseInt(pathname.split('/')[2]);
             const newData = JSON.parse(body);
             const sql = 'UPDATE employees SET ? WHERE id = ?';
@@ -95,7 +140,7 @@ const server = http.createServer((req, res) => {
                 res.end('Employee deleted...');
             });
 
-        } else if (req.method === 'GET' && pathname === '/show-employees') {
+        } else if (req.method === 'GET' && pathname === '/') {
             const sql = 'SELECT * FROM employees';
             db.query(sql, (err, results) => {
                 if (err) {
@@ -113,9 +158,6 @@ const server = http.createServer((req, res) => {
             res.end('Not Found');
         }
     });
-
-   
-
 });
 
 const PORT = 5000;
