@@ -93,6 +93,48 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
    
-    <script src="../utils/employeeService.js"></script>
+    <!-- <script src="../utils/employeeService.js"></script> -->
+     <script>
+        function addEmployee() {
+    const name = document.getElementById('name').value;
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const birthdate = document.getElementById('birthdate').value;
+    const email = document.getElementById('email').value;
+    const contactNo = document.getElementById('contactNo').value;
+    const emergencyContactNo = document.getElementById('emergencyContactNo').value;
+    const bloodGroup = document.getElementById('bloodGroup').value;
+    const presentAddress = document.getElementById('presentAddress').value;
+    const permanentAddress = document.getElementById('permanentAddress').value;
+    const department = document.getElementById('department').value;
+
+    // Create employee object
+    const employee = {
+        name,
+        age,
+        gender,
+        birthdate,
+        email,
+        contactNo,
+        emergencyContactNo,
+        bloodGroup,
+        presentAddress,
+        permanentAddress,
+        department
+    };
+    // ems.addEmployee(employee);
+    fetch('http://localhost:5000/add-employee', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employee)
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+    
+}
+     </script>
   </body>
 </html>

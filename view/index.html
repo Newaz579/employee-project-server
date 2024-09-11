@@ -106,14 +106,14 @@
     <!-- javascript file  -->
     <!-- <script src="../utils/employeeService.js"></script> -->
     <script>
-      fetch('http://localhost:5000/getAll')
-    .then(response => response.json())
-    .then(data => {
-      displaySearchResults(data);
-    })
-    .catch(error => {
-      console.error('Error:', error.message);
-    });
+        fetch('http://localhost:5000/getAll')
+        .then(response => response.json())
+        .then(data => {
+          displaySearchResults(data);
+        })
+        .catch(error => {
+          console.error('Error:', error.message);
+        });
 
     function displaySearchResults(data) {
     const resultsDiv = document.getElementById('searchResults');
@@ -157,7 +157,7 @@
                 deleteButton.classList.add("deleteButton");
                 deleteButton.onclick = () => deleteEmployee(employee.id); // Assign click handler
                 
-                // Append buttons to the cell
+                // Append buttons 
                 td.appendChild(updateButton);
                 td.appendChild(deleteButton);
             } else {
@@ -172,6 +172,49 @@
     });
     
     resultsDiv.appendChild(table);
+}
+
+function searchEmployee() {
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+        // Prevent the form from submitting
+        event.preventDefault();
+        const attribute = document.getElementById('attribute').value;
+        const value = document.getElementById('value').value;
+
+        // Send a GET request to the server with the selected attribute and value
+        fetch(`http://localhost:5000/search-employees?attribute=${attribute}&value=${value}`)
+            .then(response => response.json())
+            .then(data => {
+                displaySearchResults(data);
+            })
+            .catch(error => console.error('Error:', error));
+    });
+}
+
+function showEmployees() {
+    fetch('http://localhost:5000/getAll')
+    .then(response => response.json())
+    .then(data => {
+        displaySearchResults(data);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+function deleteEmployee(id) {
+    if (window.confirm("Do you really want to Delete?")) {
+        fetch(`http://localhost:5000/delete-employee/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            alert(data);
+            location.reload();
+        })
+        .catch(error => console.error('Error:', error));
+      }
+
 }
 
 function updatedEmployee(employee) {
