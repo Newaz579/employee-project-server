@@ -1,0 +1,67 @@
+.anchorDecoration{
+    text-decoration: none;
+}
+
+.searchEmployees{
+    margin: auto;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 8px;
+}
+.searchEmployees table{
+    text-align: center;
+}
+.searchEmployees table th{
+    border: 1px solid black;
+    height: 30px;
+    width: 200px;
+}
+.searchEmployees table td{
+    border: 1px solid black;
+    height: 30px;
+    width: 200px;
+}
+.employeeForm{
+    width: 50%;
+    margin: auto;
+}
+.form-group {
+    margin-bottom: 1em;
+}
+.form-group label {
+    display: block;
+}
+
+.updateButton {
+    background-color: #28A745;
+    width: 45%;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+}
+
+.updateButton:hover {
+    background-color: #218838; 
+}
+
+.deleteButton {
+    background-color: #DC3545;
+    width: 45%;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 2%;
+}
+
+.deleteButton:hover {
+    background-color: #C82333; 
+}

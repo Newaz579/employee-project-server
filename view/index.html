@@ -1,11 +1,185 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <button>hello</button>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="../public/style.css"> -->
+    <style>
+      .anchorDecoration{
+        text-decoration: none;
+      }
+      .searchEmployees{
+    margin: auto;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 8px;
+}
+.searchEmployees table{
+    text-align: center;
+}
+.searchEmployees table th{
+    border: 1px solid black;
+    height: 30px;
+    width: 200px;
+}
+.searchEmployees table td{
+    border: 1px solid black;
+    height: 30px;
+    width: 200px;
+}
+.updateButton {
+    background-color: #28A745;
+    width: 45%;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+}
+
+.updateButton:hover {
+    background-color: #218838; 
+}
+
+.deleteButton {
+    background-color: #DC3545;
+    width: 45%;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 2%;
+}
+
+.deleteButton:hover {
+    background-color: #C82333; 
+}
+    </style>
+    
+  </head>
+  <body>
+    <!-- navbar -->
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid" id="myForm">
+            <button class="btn btn-primary" type="submit">
+              <a class="text-white anchorDecoration" href="./addEmployee">Add Employee</a>
+            </button>
+
+          <form class="d-flex" role="search">
+            <label style="margin-top: 5px;" for="attribute">Search:</label>
+            <select class="form-control" id="attribute" name="attribute" required>
+                <option value="id">ID</option>
+                <option value="name">Name</option>
+                <option value="age">Age</option>
+                <option value="gender">Gender</option>
+                <option value="birthdate">Birthdate</option>
+                <option value="email">Email</option>
+                <option value="contactNo">Contact Number</option>
+                <option value="emergencyContactNo">Emergency Contact Number</option>
+                <option value="bloodGroup">Blood Group</option>
+                <option value="presentAddress">Present Address</option>
+                <option value="permanentAddress">Permanent Address</option>
+                <option value="department">Department</option>
+            </select>
+            <input onclick="showEmployees()" class="form-control me-2" id="value" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" onclick="searchEmployee()" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+    <h3 style="margin: auto; width: 50%; margin-top: 2%; margin-bottom: 2%;">Employee Management System</h3>
+    
+    <div class="searchEmployees" id="searchResults"></div>
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- javascript file  -->
+    <!-- <script src="../utils/employeeService.js"></script> -->
+    <script>
+      fetch('http://localhost:5000/getAll')
+    .then(response => response.json())
+    .then(data => {
+      displaySearchResults(data);
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+
+    function displaySearchResults(data) {
+    const resultsDiv = document.getElementById('searchResults');
+    resultsDiv.innerHTML = ''; 
+
+    if (!data || data.length === 0) {
+        resultsDiv.innerHTML = '<p>No employees found.</p>';
+        return;
+    }
+
+    // Create a table element
+    const table = document.createElement('table');
+
+    // Create table headers
+    const headers = ['ID', 'Name', 'Age', 'Gender', 'Birthdate', 'Email', 'Department', 'Action'];
+    const headerRow = document.createElement('tr');
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+
+    table.appendChild(headerRow);
+
+    // Populate the table with data
+    data.forEach(employee => {
+        const row = document.createElement('tr');
+        headers.forEach(header => {
+            const key = header.replace(/ /g, '').toLowerCase(); // Convert header to lowercase and remove spaces
+            const td = document.createElement('td');
+
+            if (header === 'Action') {
+                // Create action buttons
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.classList.add("updateButton")
+                updateButton.onclick = () => updatedEmployee(employee); // Assign click handler
+                
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add("deleteButton");
+                deleteButton.onclick = () => deleteEmployee(employee.id); // Assign click handler
+                
+                // Append buttons to the cell
+                td.appendChild(updateButton);
+                td.appendChild(deleteButton);
+            } else {
+                td.textContent = employee[key];
+            }
+
+            // td.textContent = employee[key];
+            row.appendChild(td);
+        });
+
+        table.appendChild(row);
+    });
+    
+    resultsDiv.appendChild(table);
+}
+
+function updatedEmployee(employee) {
+  window.location.href = `./updateEmployee?id=${employee.id}`;  
+}
+
+    </script>
+  </body>
 </html>
+ 
+
