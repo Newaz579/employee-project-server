@@ -1,6 +1,3 @@
-// Initialize the Employee Management System and create object
-const ems = new EmployeeManagementSystem();
-
 function addEmployee() {
     const name = document.getElementById('name').value;
     const age = parseInt(document.getElementById('age').value);
@@ -28,7 +25,17 @@ function addEmployee() {
         permanentAddress,
         department
     };
-    ems.addEmployee(employee);
+    // ems.addEmployee(employee);
+    fetch('http://localhost:5000/add-employee', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(employee)
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
     
 }
 
@@ -108,6 +115,8 @@ function searchEmployee() {
     });
 }
 
+
+
 function deleteEmployee(id) {
     if (window.confirm("Do you really want to Delete?")) {
         fetch(`http://localhost:5000/delete-employee/${id}`, {
@@ -117,9 +126,11 @@ function deleteEmployee(id) {
         .then(data => {
             console.log(data);
             alert(data);
+            location.reload();
         })
         .catch(error => console.error('Error:', error));
       }
+
 }
 
 function showEmployees() {

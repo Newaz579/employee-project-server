@@ -2,14 +2,8 @@ const http = require('http');
 const url = require('url');
 const path = require('path');
 const fs = require('fs');
-const {
-    addEmployeeController,
-    searchEmployeeController,
-    getSingleEmployeeController,
-    updateEmployeeController,
-    deleteEmployeeController,
-    getAllEmployeeController
-} = require('./controller/controller');
+
+const employeeRoutes = require('./routes/routes');
 
 // Function to serve static files
 function serveStaticFile(filePath, contentType, res) {
@@ -47,24 +41,18 @@ const server = http.createServer((req, res) => {
             serveStaticFile(path.join(__dirname, 'view', 'index.html'), 'text/html', res);
         } else if (pathname === '/addEmployee') {
             serveStaticFile(path.join(__dirname, 'view', 'addEmployee.html'), 'text/html', res);
-        } else if (pathname === '/updateEmployee') {
+        } else if (pathname.startsWith('/updateEmployee')) {
             serveStaticFile(path.join(__dirname, 'view', 'updateEmployee.html'), 'text/html', res);
-        } else if (pathname === '/add-employee') {
-            addEmployeeController(body, res);
-        } else if (pathname === '/search-employees') {
-            searchEmployeeController(parsedUrl, res);
-        } else if (pathname.startsWith('/getsingle-employee/')) {
-            getSingleEmployeeController(pathname, res);
-        } else if (req.method === 'PUT' && pathname.startsWith('/update-employee/')) {
-            updateEmployeeController(pathname, body, res);
-        } else if (req.method === 'DELETE' && pathname.startsWith('/delete-employee/')) {
-            deleteEmployeeController(pathname, res);
-        } else if (req.method === 'GET' && pathname === '/getAll') {
-            getAllEmployeeController(res);
-        } else {
-            // console.log(`Route not found: ${pathname}`); // Debug
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('Not Found');
+        } else if (pathname.startsWith('/utils/')) {
+            const filePath = path.join(__dirname, pathname);
+            serveStaticFile(filePath, 'application/javascript', res);
+        } else if (pathname.startsWith('/public/')) {
+            const filePath = path.join(__dirname, pathname);
+            serveStaticFile(filePath, 'text/css', res);  // Serve CSS files
+        }
+        
+         else {
+            employeeRoutes(req, res, body);
         }
     });
 });
@@ -82,7 +70,19 @@ server.listen(PORT, () => {
 
 
 
-
+// else if (pathname === '/add-employee') {
+//     addEmployeeController(body, res);
+// } else if (pathname === '/search-employees') {
+//     searchEmployeeController(parsedUrl, res);
+// } else if (pathname.startsWith('/getsingle-employee/')) {
+//     getSingleEmployeeController(pathname, res);
+// } else if (req.method === 'PUT' && pathname.startsWith('/update-employee/')) {
+//     updateEmployeeController(pathname, body, res);
+// } else if (req.method === 'DELETE' && pathname.startsWith('/delete-employee/')) {
+//     deleteEmployeeController(pathname, res);
+// } else if (req.method === 'GET' && pathname === '/getAll') {
+//     getAllEmployeeController(res);
+// }
 
 
 
